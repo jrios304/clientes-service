@@ -12,9 +12,10 @@ import com.jasmine.erp.clientes.service.dto.ClienteDTO;
 import com.jasmine.erp.clientes.service.mapper.ClienteMapper;
 import com.jasmine.erp.configuracion.service.dto.ParametroDTO;
 import com.jasmine.erp.configuracion.service.mapper.ParametroMapper;
+import com.jasmine.erp.entities.clientes.Cita;
 import com.jasmine.erp.entities.clientes.Cliente;
+import com.jasmine.erp.repositories.clientes.CitaRepository;
 import com.jasmine.erp.repositories.clientes.ClienteRepository;
-import com.mysql.cj.xdevapi.Client;
 
 @Transactional
 @Service
@@ -22,6 +23,8 @@ public class ClienteService implements ClienteServiceInterface{
 	
 	 @Autowired
 	 ClienteRepository clienteRepository;
+	 @Autowired
+	 CitaRepository citaRepository;
 	 @Autowired
 	 ClienteMapper clienteMapper;
 	 @Autowired
@@ -74,6 +77,13 @@ public class ClienteService implements ClienteServiceInterface{
 	@Override
 	public void eliminarCliente(ClienteDTO clienteEliminar) {
 		Cliente clienteEntity = clienteMapper.clienteDTOToCliente(clienteEliminar);
+		List<Cita> listaCitasRelacionadas = citaRepository.obtenerCitasCliente(clienteEliminar.getId());
+		citaRepository.deleteAll(listaCitasRelacionadas);
 		clienteRepository.delete(clienteEntity);
+	}
+
+	@Override
+	public List<ClienteDTO> obtenerClientesAutocomplete(String query) {
+		return clienteMapper.clientesToClientesDTO(clienteRepository.obtenerClientesAutocomplete(query));
 	}
 }

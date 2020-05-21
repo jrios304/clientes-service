@@ -43,4 +43,11 @@ public interface ClienteServiceInterface{
 	 * @param clienteEliminar
 	 */
 	void eliminarCliente(ClienteDTO clienteEliminar);
+	
+	/**
+	 * Permite obtener un listado de clientes de acuerdo a una parte de su nombre
+	 * @param query
+	 * @return
+	 */
+	List<ClienteDTO> obtenerClientesAutocomplete(String query);
 }
